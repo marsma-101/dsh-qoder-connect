@@ -1,0 +1,25 @@
+{
+  "name": "dsh-qoder-connect",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Bring Qoder CN desktop-app models into DeepSeek Harness: decrypt the local Qoder CN sign-in (Chromium OSCrypt), sign requests with the COSY scheme, and register a 'qoder' model group. No OAuth interaction needed.",
+  "type": "module",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "keywords": [
+    "dsh-plugin",
+    "deepseek-harness",
+    "qoder",
+    "model-provider"
+  ],
+  "license": "MIT",
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
+}

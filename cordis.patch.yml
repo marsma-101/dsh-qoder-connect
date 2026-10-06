@@ -1,0 +1,6 @@
+# Register the Qoder provider without changing the profile's current default
+# model. The plugin reuses the Qoder CN desktop app's sign-in (Chromium
+# OSCrypt-encrypted local credential); no OAuth interaction is required.
+- insert:
+    - id: llm-qoder
+      name: dsh-qoder-connect
