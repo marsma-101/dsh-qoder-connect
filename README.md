@@ -7,7 +7,7 @@
 ## 功能
 
 - **零交互登录**：解密 `%APPDATA%\com.qodercn.app.stable\auth.v1.dat`（Chromium OSCrypt：DPAPI 保护的 AES-256-GCM）。首次运行用 PowerShell 一次性导出密钥到 `<DSH_HOME>\.qoder-connect\oscrypt.key`，之后纯 node 解密。桌面 App 刷新令牌时按文件 mtime 自动跟随，签名会话在令牌轮换后自动重建。
-- **动态模型目录**：按 `enable` 过滤拉取可用模型（assistant 分组），10 分钟自动刷新；模型名后标注倍率与推理能力。
+- **动态模型目录**：完整列出上游模型目录（assistant 分组，不过滤），10 分钟自动刷新；模型名后照 WorkBuddy 的样式标注积分倍率（` · x0.5`，免费的标 ` · 免费`）。上游的 `enable` 标记与账号余额联动（点数耗尽即变 false），不代表模型本身不可用，因此不据此隐藏模型。
 - **工具调用透传**：上游返回的 `tool_calls` 原样平接进 OpenAI 兼容响应（流式 delta 与非流式 message 双路）。
 - **推理开关**：按模型的 `is_reasoning` 标记决定是否透传思考强度。
 

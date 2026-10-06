@@ -72,7 +72,6 @@ export async function fetchModels(sess) {
 		if (!Array.isArray(rawList) || rawList.length === 0) continue;
 		const models = [];
 		for (const m of rawList) {
-			if (m?.enable !== true) continue;
 			let contextWindow = 0;
 			const cc = m?.context_config;
 			if (cc && typeof cc === "object") {

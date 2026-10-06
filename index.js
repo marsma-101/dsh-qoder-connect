@@ -297,9 +297,15 @@ function thinkingLevelMapForReasoning() {
 }
 
 function toPiModel(info, baseUrl) {
+	// Price display mirrors dsh-workbuddy-connect: free models get 「 · 免费」,
+	// metered ones get the upstream price factor (e.g. 「 · x0.5」). The enable
+	// flag is account-balance dependent, so models are never hidden for it.
+	const priceSuffix = info.priceFactor === undefined || info.priceFactor === null
+		? ""
+		: info.priceFactor === 0 ? " · 免费" : ` · x${info.priceFactor}`;
 	return {
 		id: info.id,
-		name: info.name,
+		name: `${info.name}${priceSuffix}`,
 		api: "openai-completions",
 		provider: QODER_PROVIDER,
 		baseUrl,
