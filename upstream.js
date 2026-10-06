@@ -81,13 +81,18 @@ export async function fetchModels(sess) {
 			}
 			if (!contextWindow) contextWindow = Number(m?.max_input_tokens) || 200_000;
 			const isReasoning = m?.is_reasoning === true;
+			// price_factor: 0 is a real upstream value (free models, e.g.
+			// qfmodel) — never fold it into a fallback via falsy coercion. Only a
+			// missing/null/empty field yields undefined; a non-numeric string
+			// (Number → NaN) maps to undefined as well.
+			const rawPrice = m?.price_factor;
 			models.push({
 				id: String(m.key ?? ""),
 				name: String(m.display_name ?? m.key ?? ""),
 				contextWindow,
 				maxTokens: isReasoning ? 32_768 : 16_384,
 				isReasoning,
-				priceFactor: Number(m?.price_factor) || 1,
+				priceFactor: (rawPrice === undefined || rawPrice === null || rawPrice === "") ? undefined : (Number.isFinite(Number(rawPrice)) ? Number(rawPrice) : undefined),
 			});
 		}
 		if (models.length > 0) return models;
