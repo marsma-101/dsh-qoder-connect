@@ -1,9 +1,9 @@
-// index.js 闁?dsh-qoder-connect plugin entry.
+// index.js — dsh-qoder-connect plugin entry.
 //
 // Structure mirrors dsh-trae-connect: a loopback HTTP shim that speaks the
 // OpenAI completions shape, a PiAiAdapter whose models point at that shim,
 // and a settings Config card. Credentials are read from the Qoder CN
-// desktop app's OSCrypt-encrypted local store 闁?no OAuth interaction.
+// desktop app's OSCrypt-encrypted local store — no OAuth interaction.
 
 import { createServer } from "node:http";
 import { join, resolve } from "node:path";
@@ -31,7 +31,14 @@ export const Config = z.object({
 		.default(true)
 		.volatile()
 		.description("Refresh the Qoder model catalog every 10 minutes (on by default)"),
+	dataDir: z.string()
+		.default("")
+		.volatile()
+		.description("Explicit Qoder data directory (or auth.v1.dat path); overrides auto-discovery. Empty = scan %APPDATA%/com.qodercn.app.*"),
 });
+
+// QODER_DATA_DIR: explicit data-dir override (same value shape as dataDir).
+const ENV_DATA_DIR = "QODER_DATA_DIR";
 
 function readConfigValue(value) {
 	if (value === null || value === undefined) return undefined;
@@ -371,9 +378,15 @@ export async function apply(ctx, config) {
 	const logger = ctx.logger;
 	const preferences = {
 		autoRefreshModels: () => readConfigValue(config?.autoRefreshModels) !== false,
+		dataDir: () => {
+			const fromEnv = process.env[ENV_DATA_DIR];
+			if (typeof fromEnv === "string" && fromEnv.trim() !== "") return fromEnv;
+			return readConfigValue(config?.dataDir);
+		},
 	};
 	const store = new QoderCredentialStore({
-		keyPath: resolve(join(process.env.DSH_HOME ?? join(homedir(), ".dsh"), ".qoder-connect", "oscrypt.key")),
+		keyDir: resolve(join(process.env.DSH_HOME ?? join(homedir(), ".dsh"), ".qoder-connect")),
+		dataDir: preferences.dataDir,
 		logger,
 	});
 	const sessionRef = { current: undefined };
